@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Captura de Datos de Empleado y Tabla de Datos</title>
+    <style>
+        body {
+            font-family: "Verdana", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        select, input {
+            margin-bottom: 16px;
+        }
+
+        button {
+            align-self: flex-start;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #007bff;">Formulario de Captura de Datos de Empleado</h1>
+    <form id="formulario-empleado">
+        <label for="apellidos" style="color: #007bff;">Apellidos:</label>
+        <input type="text" id="apellidos" name="apellidos" pattern="[A-Za-z ]+" required>
+        
+        <label for="nombres" style="color: #007bff;">Nombres:</label>
+        <input type="text" id="nombres" name="nombres" pattern="[A-Za-z ]+" required>
+        
+        <label for="departamento" style="color: #007bff;">Departamento:</label>
+        <select id="departamento" name="departamento" required>
+            
+        </select>
+        
+        <label for="municipio" style="color: #007bff;">Municipio:</label>
+        <input type="text" id="municipio" name="municipio" required>
+       
+        
+        <label for="fechaNacimiento" style="color: #007bff;">Fecha de Nacimiento:</label>
+        <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
+        
+        <label for="salario" style="color: #007bff;">Salario:</label>
+        <input type="number" id="salario" name="salario" required>
+        
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h2 style="color: #007bff;">Filtrar Datos</h2>
+    <label for="filtro-departamento" style="color: #007bff;">Departamento:</label>
+    <select id="filtro-departamento">
+        <option value="">Todos</option>
+    
+    </select>
+    
+    <label for="filtro-nombre" style="color: #007bff;">Nombre:</label>
+    <select id="filtro-nombre">
+        <option value="">Todos</option>
+       
+    </select>
+    
+    <button id="filtrar-button" style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; cursor: pointer;">Filtrar</button>
+
+    <h2 style="color: #007bff;">Tabla de Datos desde JSON</h2>
+    <table id="tabla-datos">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Departamento</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+     
+        function cargarDatosEnTabla() {
+            fetch('towns.json') 
+                .then(response => response.json()) 
+                .then(data => {
+                    const tablaDatos = document.getElementById('tabla-datos');
+                    const tbody = tablaDatos.querySelector('tbody');
+                    
+                    
+                    data.forEach(item => {
+                        const row = document.createElement('tr');
+                        const codigoCell = document.createElement('td');
+                        codigoCell.textContent = item.code;
+                        const departamentoCell = document.createElement('td');
+                        departamentoCell.textContent = item.department;
+                        const nombreCell = document.createElement('td');
+                        nombreCell.textContent = item.name;
+                        
+                        row.appendChild(codigoCell);
+                        row.appendChild(departamentoCell);
+                        row.appendChild(nombreCell);
+                        
+                        tbody.appendChild(row);
+                    });
+
+                   
+                    const departamentosSelect = document.getElementById('departamento');
+                    const nombresSelect = document.getElementById('filtro-nombre');
+
+                    
+                    const departamentosUnicos = [...new Set(data.map(item => item.department))];
+                    const nombresUnicos = [...new Set(data.map(item => item.name))];
+
+                    
+                    departamentosUnicos.forEach(departamento => {
+                        const option = document.createElement('option');
+                        option.value = departamento;
+                        option.textContent = departamento;
+                        departamentosSelect.appendChild(option);
+                        document.getElementById('filtro-departamento').appendChild(option.cloneNode(true));
+                    });
+
+                    nombresUnicos.forEach(nombre => {
+                        const option = document.createElement('option');
+                        option.value = nombre;
+                        option.textContent = nombre;
+                        nombresSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar los datos:', error);
+                });
+        }
+
+        
+        const formularioEmpleado = document.getElementById('formulario-empleado');
+        const departamentoInput = document.getElementById('departamento');
+        const municipioInput = document.getElementById('municipio');
+        const filtroDepartamentoSelect = document.getElementById('filtro-departamento');
+        const filtroNombreSelect = document.getElementById('filtro-nombre');
+
+        
+        departamentoInput.addEventListener('input', () => {
+            const selectedDepartment = departamentoInput.value;
+            
+        });
+
+        formularioEmpleado.addEventListener('submit', (event) => {
+            event.preventDefault();
+     
+            const apellidos = document.getElementById('apellidos').value;
+            const nombres = document.getElementById('nombres').value;
+            const departamento = departamentoInput.value;
+            const municipio = municipioInput.value;
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const salario = document.getElementById('salario').value;
+
+           
+        });
+
+        const Departamento = [
+            {"code":"05","name":"Antioquia"},
+            {"code":"08","name":"Atlantico"},
+            {"code":"11","name":"Bogotá D.C"},
+            {"code":"13","name":"Bolivar"},
+            {"code":"15","name":"Boyacá"},
+            {"code":"17","name":"Caldas"},
+            {"code":"18","name":"Caqueta"},
+            {"code":"19","name":"Cauca"},
+            {"code":"20","name":"Cesar"},
+            {"code":"23","name":"Cordoba"},
+            {"code":"25","name":"Cundinamarca"},
+            {"code":"27","name":"Chocó"},
+            {"code":"41","name":"Huila"},
+            {"code":"44","name":"La Guajira"},
+            {"code":"47","name":"Magdalena"},
+            {"code":"50","name":"Meta"},
+            {"code":"52","name":"Nariño"},
+            {"code":"54","name":"Norte de Santander"},
+            {"code":"63","name":"Quindio"},
+            {"code":"66","name":"Risaralda"},
+            {"code":"68","name":"Santander"},
+            {"code":"70","name":"Sucre"},
+            {"code":"73","name":"Tolima"},
+            {"code":"76","name":"Valle del Cauca"},
+            {"code":"81","name":"Arauca"},
+            {"code":"85","name":"Casanare"},
+            {"code":"86","name":"Putumayo"},
+            {"code":"88","name":"San Andrés"},
+            {"code":"91","name":"Amazonas"},
+            {"code":"94","name":"Guainía"},
+            {"code":"95","name":"Guaviare"},
+            {"code":"97","name":"Vaupes"},
+            {"code":"99","name":"Vichada"}
+        ];
+
+
+
+        cargarDatosEnTabla();
+    </script>
+</body>
+</html>
+
+
+
+
